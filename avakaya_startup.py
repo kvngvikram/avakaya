@@ -112,7 +112,7 @@ def save_mpl_fig(*args):
     fig_nums = plt.get_fignums()
     fig_labels = plt.get_figlabels()
 
-    arg = args[0]
+    arg = args[0] if len(args) > 0 else ""
 
     if len(fig_nums) > 0:
         if len(arg) > 0:
