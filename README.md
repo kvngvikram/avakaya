@@ -8,7 +8,7 @@ Wouldn't it be good if you just share a file for a plot, but the file opens in a
 And you can drag, zoom , change title, and everything, have your shared axes in subplots etc ?
 Presenting you "avakaya" (mango pickle in telugu)
 
-Add the startup file in ipython startup folder, and then you can use %save_mpl_fig magic inside ipython prompt to save the current active figure.
+Add the avakaya_startup.py file in ipython startup folder (~/.ipython/profile_default/startup/), and then you can use %save_mpl_fig magic inside ipython prompt to save the current active figure.
 To run the figure just enter ./figure.pp in terminal, same as a shell script (it is a shell script, where pp stands for pickle plot). 
 
 This is made in linux, for linux systems. Before opening the figure file, make sure that there is python and matplotlib installed.
