@@ -13,8 +13,8 @@ And you can drag, zoom , change title, and everything, have your shared axes in 
 
 Presenting you "avakaya" (mango pickle in telugu)
 
-Add the avakaya_startup.py file in ipython startup folder (~/.ipython/profile_default/startup/ , well this is what make does, so just run make setup or make remove), and then you can use %save_mpl_fig magic inside ipython prompt to save the current active figure. This seems to even work in spyder and jupyter notebooks (did not test)
+Add the *avakaya_startup.py* file in ipython startup folder (*~/.ipython/profile_default/startup/*). Well this is what make does, so just run make setup or make remove), and then you can use `%save_mpl_fig` magic inside ipython prompt to save the current active figure. This seems to even work in spyder and jupyter notebooks (did not test)
 
-To run the figure just enter ./figure.pp in terminal, same as a shell script (it is a shell script, where pp stands for pickle plot). 
+To run the figure just enter `./figure.pp` in terminal, same as a shell script (it is a shell script, where pp stands for pickle plot). 
 
 This is made in linux, for linux systems. Before opening the figure file, make sure that there is python and matplotlib installed.
