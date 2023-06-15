@@ -4,12 +4,15 @@
 # can use the %save_mpl_fig magic function to save the currently active
 # matplotlib figure as a pickle file or a standalone executable file.
 ###############################################################################
-import pickle
 import tkinter as tk
 from tkinter import filedialog
 import matplotlib.pyplot as plt
 import os
 from IPython.core.magic import register_line_magic
+try:
+    import dill as pickle
+except ModuleNotFoundError:
+    import pickle
 
 our_extension = "pp"
 
@@ -29,13 +32,16 @@ shell_script = '''
 ###############################################################################
 python -c '
 #python_begin
-import pickle
 import io
 import os
 from sys import argv
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import filedialog
+try:
+    import dill as pickle
+except ModuleNotFoundError:
+    import pickle
 
 self_filename = argv[1]
 our_extension = self_filename.split(".")[-1]
@@ -109,26 +115,35 @@ __PAYLOAD_BEGIN__
 
 @register_line_magic
 def save_mpl_fig(*args):
+    # to work with both functions and magic
+    arg = args[0] if len(args) > 0 else ""
+
     fig_nums = plt.get_fignums()
     fig_labels = plt.get_figlabels()
-
-    arg = args[0] if len(args) > 0 else ""
 
     if len(fig_nums) > 0:
         if len(arg) > 0:
             if arg in fig_labels:
                 fig = plt.figure(arg)
                 fig_name = arg
-            elif int(arg) in fig_nums:
-                fig = plt.figure(int(arg))
-                fig_name = arg
-            else:
+            try:  # to check if int(arg) is possible.
+                if int(arg) in fig_nums:
+                    fig = plt.figure(int(arg))
+                    fig_name = arg
+                else:
+                    print("wrong argument, getting the current figure")
+                    fig = plt.gcf()
+                    # fig_name = fig.canvas.get_window_title()
+                    fig_name = ""
+            except ValueError:
                 print("wrong argument, getting the current figure")
                 fig = plt.gcf()
-                fig_name = fig.canvas.get_window_title()
+                # fig_name = fig.canvas.get_window_title()
+                fig_name = ""
         else:
             fig = plt.gcf()
-            fig_name = fig.canvas.get_window_title()
+            # fig_name = fig.canvas.get_window_title()
+            fig_name = ""
 
         root = tk.Tk()
         root.withdraw()
