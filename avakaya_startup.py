@@ -11,13 +11,15 @@ import os
 from IPython.core.magic import register_line_magic
 try:
     import dill as pickle
+    dill_present = True
 except ModuleNotFoundError:
     import pickle
+    dill_present = False
 
 our_extension = "pp"
 
 
-shell_script = '''
+shell_script = f'''
 #/usr/bin/sh
 ###############################################################################
 #
@@ -30,27 +32,44 @@ shell_script = '''
 # just what the pickle file is of the figure
 #
 ###############################################################################
-python -c '
+python3 -c '
 #python_begin
 import io
 import os
+import sys
+import re
 from sys import argv
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import filedialog
-try:
-    import dill as pickle
-except ModuleNotFoundError:
+saving_file_with_dill = {dill_present}
+if saving_file_with_dill:
+    try:
+        import dill as pickle
+    except ModuleNotFoundError:
+        print("Hey, I was saved as pickle using dill package,")
+        print("not the native pickle package.")
+        print("And you do not have dill installed.")
+        print("So install it !")
+        print("dill can help me work with secondary axis and maybe more")
+        print("Anyway, aborting gracefully..")
+        sys.exit()
+else:
     import pickle
+    try:
+        import dill
+    except ModuleNotFoundError:
+        print("Please install dill package for more features")
+        print("like secondary axis feature, and maybe more")
 
 self_filename = argv[1]
 our_extension = self_filename.split(".")[-1]
-save_key = "ctrl+S"
+save_key = "ctrl+k"  # small k
 
 with open(self_filename, "rb") as f:
-    payload_flag, ba, bs = False, b"", b""
+    payload_flag, ba, script_bytes = False, b"", b""
     for i in f:
-        bs = bs + i if not payload_flag else bs
+        script_bytes = script_bytes + i if not payload_flag else script_bytes
         ba = ba + i if payload_flag else ba
         payload_flag = True if (i == b"__PAYLOAD_BEGIN__\\n") else payload_flag
 
@@ -75,12 +94,12 @@ def save_as(event):
 
             if entered_extension == "pickle":
                 # just save the pickle
-                with open(filename, "wb") as script_file:
-                    pickle.dump(fig, script_file)
+                with open(filename, "wb") as pickle_file:
+                    pickle.dump(fig, pickle_file)
 
             else:
                 with open(filename, "wb") as script_file:
-                    script_file.write(bs)
+                    script_file.write(script_bytes)
 
                 with open(filename, "ab") as script_file:
                     pickle.dump(fig, script_file)
@@ -100,7 +119,7 @@ print("       _______________________________________________")
 print("      /_______________________________________________\\\\")
 print("     //                                               \\\\\\\\")
 print("    ||                                                 ||")
-print("    ||    Press Ctrl+Shift+S to save any changes !!    ||")
+print("    ||       Press Ctrl+k to save any changes !!       ||")
 print("    ||                                                 ||")
 print("     \\\\\\\\_______________________________________________//")
 print("      \\\\_______________________________________________/")
