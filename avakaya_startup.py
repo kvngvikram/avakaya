@@ -126,16 +126,10 @@ def save_mpl_fig(*args):
             if arg in fig_labels:
                 fig = plt.figure(arg)
                 fig_name = arg
-            try:  # to check if int(arg) is possible.
-                if int(arg) in fig_nums:
-                    fig = plt.figure(int(arg))
-                    fig_name = arg
-                else:
-                    print("wrong argument, getting the current figure")
-                    fig = plt.gcf()
-                    # fig_name = fig.canvas.get_window_title()
-                    fig_name = ""
-            except ValueError:
+            elif arg in [str(i) for i in fig_nums]:
+                fig = plt.figure(int(arg))
+                fig_name = arg
+            else:
                 print("wrong argument, getting the current figure")
                 fig = plt.gcf()
                 # fig_name = fig.canvas.get_window_title()
